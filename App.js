@@ -1,19 +1,20 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {View, Text} from 'react-native';
-// import axios from 'axios';
-// axios
-//   .get('https://api-hmugo-web.itheima.net/api/public/v1/home/swiperdata')
-//   .then(console.log);
-// console.log('调试');
+import {Provider} from 'mobx-react';
+import rootStore from './mobx/index';
+import Btn from './components/Btn';
+class App extends Component {
+  state = {num: 100};
 
-const App = () => {
-  let x = 1;
-  console.log(x);
-  return (
-    <View>
-      <Text>======</Text>
-    </View>
-  );
-};
+  render() {
+    return (
+      <View>
+        <Provider rootStore={rootStore}>
+          <Btn></Btn>
+        </Provider>
+      </View>
+    );
+  }
+}
 
 export default App;
