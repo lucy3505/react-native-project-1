@@ -1,20 +1,22 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Image, StatusBar, ActivityIndicator} from 'react-native';
+import {Image, StatusBar, ActivityIndicator} from 'react-native';
 import {pxToDp} from 'utils/stylesKits';
 import {Input, Icon} from '@rneui/themed';
 import validator from 'utils/validator';
-import {increment, multiply, incrementByAmount} from './counterSlice';
 import {getLogin} from './loginSlice';
 import {useDispatch, useSelector} from 'react-redux';
-import {Button} from 'react-native-paper';
-import {FancyButton} from 'components/Button';
-import {isGlobalLoadingAction} from 'src/store/commonReducer';
+import {LinearButton} from 'components/Button';
+import {LoginStyle} from './loginStyle';
+import {Box as View, Text} from 'palette';
+// import {Box} from 'palette/Box';
+// import {Text as MyText} from 'palette/Text';
 function Login() {
+  const {inputVcodeText} = LoginStyle;
   const [number, setNumber] = useState('13022112163');
   const [phoneValid, setPhoneValid] = useState(true);
   const dispatch = useDispatch();
-  const {value} = useSelector(state => state.counterSlice);
-  const {v} = useSelector(state => state.loginSlice);
+
+  const {sendVerifyCode} = useSelector(state => state.loginSlice);
 
   //登陆框手机号输入
   const phoneNumberChangeText = num => {
@@ -22,48 +24,79 @@ function Login() {
     console.log(number);
   };
 
-  useEffect(() => {
-    console.log('value::::', value);
-    console.log('v:::', v);
-  }, [value, v]);
+  // useEffect(() => {
+  //   console.log('value::::', value);
+  //   console.log('v:::', v);
+  // }, [value, v]);
   //   手机号码点击 完成
   const phoneNumberSubmit = async () => {
-    // 1.对手机号码的合法性做校验 -正则
-    //  1 不通过 提示
-    // 2.将手机号码发送到后台对应借口 ->获取验证码
-    // 1.发送异步请求的时候 自动的显示等待框
-    // 2 请求回来 等待框 自动隐藏
-    // 3 关键
-    //   1 等待框？
-    //   2自动？ ->axios的拦截器
-    // 3.将登陆页面切换成 填写验证码的界面
     const correctNumber = validator.validatePhone(number);
     setPhoneValid(correctNumber);
     if (!correctNumber) {
       console.log('correctNumber::', correctNumber);
       return;
     }
-    // debugger;
-
-    // dispatch(increment());
-    // dispatch(isGlobalLoadingAction(true));
-    dispatch(getLogin());
-    dispatch(incrementByAmount(3));
-    // getLogin();
-    // const counter = useSelector(state => state.loginScreenSlice);
-
-    // toast.globalLoading();
-    // toast.show('success', {
-    //   type: 'success',
-    //   successColor: 'red',
-    //   backgroundColor: 'blue',
-    // });
-    // const res = await request.post(ACCOUNT_LOGIN, {phone: number});
-    // console.log('Res::', res);
+    dispatch(getLogin({phone: number}));
   };
+  const vCodePage = (
+    <View>
+      <View>
+        <Text fontSize={pxToDp(25)} color="secondary" fontWeight="bold">
+          输入6位验证码
+        </Text>
+      </View>
+      <View mt={25}>
+        <Text color="secondary">已发到：+86{number}</Text>
+      </View>
+      <View mt={10}>
+        <LinearButton
+          onPress={phoneNumberSubmit}
+          style={{height: 40, with: '85%', borderRadius: 20}}>
+          重新获取
+        </LinearButton>
+      </View>
+    </View>
+  );
+
+  const getVerifyCodePage = (
+    <View>
+      {/* 标题 */}
+      <View>
+        <Text style={{fontSize: pxToDp(25), color: '#888', fontWeight: 'bold'}}>
+          手机号登陆注册
+        </Text>
+      </View>
+      {/* 输入框 */}
+      <View mt={pxToDp(30)}>
+        <Input
+          placeholder="请输入手机号码"
+          leftIcon={{
+            type: 'font-awesome',
+            name: 'phone',
+            color: '#ccc',
+            size: pxToDp(20),
+          }}
+          maxLength={11}
+          keyboardType="phone-pad"
+          value={number}
+          inputStyle={{color: 'green'}}
+          errorMessage={phoneValid ? '' : '手机号码不正确'}
+          onSubmitEditing={phoneNumberSubmit}
+          onChangeText={phoneNumberChangeText}
+        />
+        <View>
+          <LinearButton
+            onPress={phoneNumberSubmit}
+            style={{height: 40, with: '85%', borderRadius: 20}}>
+            获取验证码
+          </LinearButton>
+        </View>
+      </View>
+    </View>
+  );
 
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+    <View>
       {/* 0.0状态栏开始 */}
       <StatusBar backgroundColor="transpar ent" translucent={true} />
       {/* 0.0状态栏结束 */}
@@ -75,45 +108,10 @@ function Login() {
       />
       {/* 1.0背景图片  结束 */}
       {/* 2.0 内容 开始 */}
+
       <View style={{padding: pxToDp(20)}}>
         {/* 2.1  登陆开始*/}
-        <View>
-          {/* 标题 */}
-          <View>
-            <Text
-              style={{fontSize: pxToDp(25), color: '#888', fontWeight: 'bold'}}>
-              手机号登陆注册{value}
-            </Text>
-          </View>
-          {/* 输入框 */}
-          <View style={{marginTop: pxToDp(30)}}>
-            <Input
-              placeholder="请输入手机号码"
-              leftIcon={{
-                type: 'font-awesome',
-                name: 'phone',
-                color: '#ccc',
-                size: pxToDp(20),
-              }}
-              maxLength={11}
-              keyboardType="phone-pad"
-              value={number}
-              inputStyle={{color: 'green'}}
-              errorMessage={phoneValid ? '' : '手机号码不正确'}
-              onSubmitEditing={phoneNumberSubmit}
-              onChangeText={phoneNumberChangeText}
-            />
-            <Button
-              raised
-              theme={{roundness: 3}}
-              mode="contained"
-              onPress={() => console.log('contained')}>
-              登陆
-            </Button>
-            <FancyButton>FancyButton</FancyButton>
-            {/* <LinearButton>11</LinearButton> */}
-          </View>
-        </View>
+        {sendVerifyCode ? vCodePage : getVerifyCodePage}
         {/* 2.1 登陆 结束 */}
       </View>
     </View>

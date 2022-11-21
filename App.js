@@ -7,18 +7,21 @@ import Main from 'pages/main';
 import {Provider} from 'react-redux';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {theme} from 'utils/theme';
+import {ThemeProvider} from 'styled-components';
 function App() {
   return (
     <Provider store={store}>
-      <PaperProvider theme={theme}>
-        <ToastProvider {...customToastType}>
-          <View style={{flex: 1}}>
-            {/* <Nav></Nav> */}
+      <ThemeProvider theme={theme}>
+        <PaperProvider theme={theme}>
+          <ToastProvider {...customToastType}>
+            <View style={{flex: 1}}>
+              {/* <Nav></Nav> */}
 
-            <Main></Main>
-          </View>
-        </ToastProvider>
-      </PaperProvider>
+              <Main></Main>
+            </View>
+          </ToastProvider>
+        </PaperProvider>
+      </ThemeProvider>
     </Provider>
   );
 }

@@ -1,6 +1,7 @@
 import {MD3LightTheme as DefaultTheme} from 'react-native-paper';
+import {system} from 'styled-system';
 
-const greenColor = {
+export const greenColor = {
   primary: 'rgb(0, 110, 0)',
   onPrimary: 'rgb(255, 255, 255)',
   primaryContainer: 'rgb(141, 251, 119)',
@@ -46,3 +47,4 @@ export const theme = {
   ...DefaultTheme,
   colors: greenColor,
 };
+console.log('theme::::', theme);

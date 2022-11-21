@@ -19,6 +19,7 @@ module.exports = {
           pages: './src/pages',
           assets: './assets',
           store: './src/store',
+          palette: './src/palette',
           ...moduleResolverAlias,
         },
         extensions: [

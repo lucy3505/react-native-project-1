@@ -2,17 +2,9 @@ import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, ActivityIndicator} from 'react-native';
 import Login from 'pages/account/login';
 import Toast, {ToastProvider} from 'react-native-toast-notifications';
-import customToastType, {
-  GlobalLoading,
-  useCuzToast,
-} from 'utils/renderToastType';
+import customToastType from 'utils/renderToastType';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  resetState,
-  setCuzLoadingStatus,
-  setToastStatus,
-  setOtherToastToFalse,
-} from 'store/commonReducer';
+
 export default function GlobalToast() {
   //   const toast = useCuzToast();
   //   toast.globalLoading();
@@ -57,8 +49,7 @@ export default function GlobalToast() {
     );
   }
   if (loadingToast || successToast || failToast) {
-    debugger;
-    return <Toast ref={loadingToastRef}></Toast>;
+    return <Toast ref={loadingToastRef} placement="center"></Toast>;
   }
 
   return <></>;

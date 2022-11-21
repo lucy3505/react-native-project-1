@@ -2,10 +2,10 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import request from 'utils/request';
 import {ACCOUNT_LOGIN} from 'utils/pathMap';
 import {GLOBAL_LOADING_FLAG} from 'src/constants/commonConstans';
-// export const getLogin = createAsyncThunk(
-//   `/get/login/`,
 export const getLogin = createAsyncThunk(
-  `/get/login/${GLOBAL_LOADING_FLAG}`,
+  `/get/login/`,
+  // export const getLogin = createAsyncThunk(
+  //   `/get/login/${GLOBAL_LOADING_FLAG}`,
   async value => {
     try {
       const res = await request.post(ACCOUNT_LOGIN, value);
@@ -17,7 +17,7 @@ export const getLogin = createAsyncThunk(
     // console.log('Res::', res);
   },
 );
-const initialState = {v: 100};
+const initialState = {sendVerifyCode: false};
 
 const loginSlice = createSlice({
   name: 'counter',
@@ -26,6 +26,10 @@ const loginSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(getLogin.pending, (state, {payload}) => {
       // state.v += payload;
+    });
+    builder.addCase(getLogin.fulfilled, (state, {payload}) => {
+      // state.v += payload;
+      state.sendVerifyCode = true;
     });
   },
 });
