@@ -25,6 +25,7 @@ export default function LinearButton(props) {
   });
   return (
     <TouchableOpacity
+      disabled={props.disabled}
       style={{
         width: '100%',
         height: '100%',

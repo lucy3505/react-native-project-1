@@ -8,6 +8,8 @@ import {Provider} from 'react-redux';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {theme} from 'utils/theme';
 import {ThemeProvider} from 'styled-components';
+import Nav from './src/nav';
+import GlobalToast from 'components/Toast';
 function App() {
   return (
     <Provider store={store}>
@@ -17,7 +19,7 @@ function App() {
             <View style={{flex: 1}}>
               {/* <Nav></Nav> */}
 
-              <Main></Main>
+              <Nav></Nav>
             </View>
           </ToastProvider>
         </PaperProvider>

@@ -1,22 +1,31 @@
 import React, {useEffect, useState} from 'react';
-import {Image, StatusBar, ActivityIndicator} from 'react-native';
+import {Image, StatusBar} from 'react-native';
 import {pxToDp} from 'utils/stylesKits';
 import {Input, Icon} from '@rneui/themed';
 import validator from 'utils/validator';
-import {getLogin} from './loginSlice';
+import {
+  getLogin,
+  setSendVerifyCodeSuccess,
+  sendVcode,
+  setUserContent,
+} from './loginSlice';
 import {useDispatch, useSelector} from 'react-redux';
 import {LinearButton} from 'components/Button';
-import {LoginStyle} from './loginStyle';
 import {Box as View, Text} from 'palette';
-// import {Box} from 'palette/Box';
-// import {Text as MyText} from 'palette/Text';
-function Login() {
-  const {inputVcodeText} = LoginStyle;
-  const [number, setNumber] = useState('13022112163');
-  const [phoneValid, setPhoneValid] = useState(true);
-  const dispatch = useDispatch();
+import {CodeField} from 'components';
+import {useToast} from 'react-native-toast-notifications';
 
-  const {sendVerifyCode} = useSelector(state => state.loginSlice);
+function Login(props) {
+  const [number, setNumber] = useState('13022112263');
+  const [phoneValid, setPhoneValid] = useState(true);
+  const [btnTxt, setBtnTxt] = useState('重新获取');
+  const [countDowning, setCountDowning] = useState(false);
+  const [showLogin, setShowLogin] = useState(true);
+  const dispatch = useDispatch();
+  const toast = useToast();
+  const {sendVerifyCodeSuccess, userContent} = useSelector(
+    state => state.loginSlice,
+  );
 
   //登陆框手机号输入
   const phoneNumberChangeText = num => {
@@ -24,12 +33,33 @@ function Login() {
     console.log(number);
   };
 
-  // useEffect(() => {
-  //   console.log('value::::', value);
-  //   console.log('v:::', v);
-  // }, [value, v]);
+  useEffect(() => {
+    if (sendVerifyCodeSuccess) {
+      // setCountDowning(true);
+      countDown();
+    }
+  }, [sendVerifyCodeSuccess]);
   //   手机号码点击 完成
+
+  useEffect(() => {
+    if (userContent?.code === 10001) {
+      toast.show(userContent.msg);
+      dispatch(setUserContent({}));
+    }
+    if (userContent?.code === '10000') {
+      // setCountDowning(true);
+      console.log('props---', props);
+      if (userContent.data.isNew) {
+        dispatch(setUserContent({}));
+        props.navigation.navigate('UserInfo');
+      } else {
+        alert('laoyoonghu');
+      }
+    }
+  }, [userContent]);
+
   const phoneNumberSubmit = async () => {
+    setShowLogin(false);
     const correctNumber = validator.validatePhone(number);
     setPhoneValid(correctNumber);
     if (!correctNumber) {
@@ -37,6 +67,35 @@ function Login() {
       return;
     }
     dispatch(getLogin({phone: number}));
+  };
+
+  const countDown = () => {
+    if (countDowning) {
+      return;
+    }
+    setCountDowning(true);
+    console.log('count::::');
+    // setCountDowning(true)
+    let count = 5;
+    setBtnTxt(`重新获取(${count}s)`);
+    const id = setInterval(() => {
+      count--;
+      setBtnTxt(`重新获取(${count}s)`);
+      if (count === 0) {
+        clearInterval(id);
+        dispatch(setSendVerifyCodeSuccess(false));
+        setCountDowning(false);
+        setBtnTxt(`重新获取`);
+      }
+    }, 1000);
+  };
+
+  const handleRepGetVerifyCode = () => {
+    dispatch(getLogin({phone: number}));
+  };
+
+  const onVcodeSubmitEditing = v => {
+    dispatch(sendVcode({phone: number, vcode: v}));
   };
   const vCodePage = (
     <View>
@@ -48,11 +107,19 @@ function Login() {
       <View mt={25}>
         <Text color="secondary">已发到：+86{number}</Text>
       </View>
+      <View>
+        <CodeField
+          // onSubmitEditing={onVcodeSubmitEditing}
+          onVcodeSubmitEditing={onVcodeSubmitEditing}
+        />
+      </View>
+
       <View mt={10}>
         <LinearButton
-          onPress={phoneNumberSubmit}
+          disabled={countDowning}
+          onPress={handleRepGetVerifyCode}
           style={{height: 40, with: '85%', borderRadius: 20}}>
-          重新获取
+          {btnTxt}
         </LinearButton>
       </View>
     </View>
@@ -111,7 +178,7 @@ function Login() {
 
       <View style={{padding: pxToDp(20)}}>
         {/* 2.1  登陆开始*/}
-        {sendVerifyCode ? vCodePage : getVerifyCodePage}
+        {!showLogin ? vCodePage : getVerifyCodePage}
         {/* 2.1 登陆 结束 */}
       </View>
     </View>
