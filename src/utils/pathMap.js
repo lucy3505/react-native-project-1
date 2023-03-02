@@ -1,7 +1,8 @@
 /**
  * 接口基地址
  */
-export const BASE_URI = 'http://127.0.0.1:3000';
+// export const BASE_URI = 'http://127.0.0.1:3000';
+export const BASE_URI = 'http://192.168.3.8:3000';
 
 /**
  *  登录 获取验证码

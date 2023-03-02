@@ -433,7 +433,7 @@
 			baseConfigurationReference = 2E29820F8AD4FFD6C4B76FE2 /* Pods-AwesomeProject4-AwesomeProject4Tests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = T3GN7FM5MF;
+				DEVELOPMENT_TEAM = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -462,7 +462,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = T3GN7FM5MF;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = AwesomeProject4Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (

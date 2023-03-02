@@ -31,7 +31,39 @@ export const sendVcode = createAsyncThunk(
     // console.log('Res::', res);
   },
 );
-const initialState = {sendVerifyCodeSuccess: false, userContent: {}};
+
+export const getAddress = createAsyncThunk(
+  `/user/getAddress/${GLOBAL_LOADING_FLAG}`,
+  async data => {
+    try {
+      // const res = await request.get(
+      //   `https://restapi.amap.com/v3/geocode/regeo?location=116.310003,39.991957&key=f47506b2a91d59f4ef0ee4a66c8356ac&radius=1000&extensions=all`,
+      // );
+
+      // console.log(res);
+      const res = await request.post('/user/location', data);
+      console.log('addredd:::', res);
+      return res.data;
+    } catch (err) {
+      console.log(err);
+    }
+    // console.log('Res::', res);
+  },
+);
+
+// export const getAddress = (lat, lng, callback) => {
+//   fetch(`https://restapi.amap.com/v3/geocode/regeo?key=${web key}&location=${lng},${lat}`, {
+//       method: 'GET',
+//   })
+//       .then(response => response.json())
+//       .then(result => {
+//           console.log('result', result);
+//       })
+//       .catch(error => {
+//           console.log('error', error);
+//       });
+// };
+const initialState = {sendVerifyCodeSuccess: false, userContent: {}, loc: ''};
 
 const loginSlice = createSlice({
   name: 'login',
@@ -63,6 +95,9 @@ const loginSlice = createSlice({
         return;
       }
       state.userContent = payload;
+    });
+    builder.addCase(getAddress.fulfilled, (state, {payload}) => {
+      state.loc = payload.regeocode?.addressComponent?.province;
     });
   },
 });
